@@ -13,17 +13,29 @@ const long steps = 4096;
  */
 AccelStepper myStepper1(AccelStepper::HALF4WIRE, 8, 10, 9, 11);
 AccelStepper myStepper2(AccelStepper::HALF4WIRE, 4, 6, 5, 7);
+AccelStepper myStepper3(AccelStepper::HALF4WIRE, 22, 26, 24, 28);
+AccelStepper myStepper4(AccelStepper::HALF4WIRE, 23, 27, 25, 29);
 
 void Step(long count){
   myStepper1.moveTo(steps * count);
   myStepper2.moveTo(steps * count);
+  myStepper3.moveTo(steps * count / 2);
+  myStepper4.moveTo(steps * count / 2);
+  Serial.println("check in");
   while (1){
     myStepper1.run();
     myStepper2.run();
-    if (myStepper1.distanceToGo() == 0 || myStepper2.distanceToGo() == 0){
+    myStepper3.run();
+    myStepper4.run();
+    if (myStepper1.distanceToGo() == 0){
       break;
     }
   }
+  Serial.println("check out");
+  myStepper1.setCurrentPosition(0);
+  myStepper2.setCurrentPosition(0);
+  myStepper3.setCurrentPosition(0);
+  myStepper4.setCurrentPosition(0);
 }
 //-------------------------------------------------
 
@@ -41,9 +53,9 @@ int minute;
 int second;
 
 //설정하고 싶은 시간 설정
-#define HOUR 1
-#define MINUTE 58
-#define SECOND 52
+#define HOUR 0
+#define MINUTE 0
+#define SECOND 10
 
 TM1637Display display(CLK, DIO);
 
@@ -83,9 +95,9 @@ void TimerDisplay(){
   while(1){
     static uint8_t secs;
     DateTime now = DS3231M.now();
-    //hour가 0, 그리고 minute가 0이 되는 조건이면
+    //hour가 0, minute가 0, second가 0이 되는 조건이면
     //타이머 화면 꺼지면서 함수 빠져나오기
-    if (hour == 0 && minute == 0){
+    if (hour == 0 && minute == 0 && second == 0){
       display.setBrightness(0x07, false);
       display.setSegments(data);
       return;
@@ -137,9 +149,17 @@ void setup() {
   myStepper2.setMaxSpeed(1000.0);
   myStepper2.setAcceleration(500.0);
   myStepper2.setSpeed(200);
+  myStepper3.setMaxSpeed(1000.0);
+  myStepper3.setAcceleration(500.0);
+  myStepper3.setSpeed(200);
+  myStepper4.setMaxSpeed(1000.0);
+  myStepper4.setAcceleration(500.0);
+  myStepper4.setSpeed(200);
   //초기위치 설정
   myStepper1.setCurrentPosition(0);
   myStepper2.setCurrentPosition(0);
+  myStepper3.setCurrentPosition(0);
+  myStepper4.setCurrentPosition(0);
   
   Serial.begin(9600);
   DS3231M.begin();
