@@ -53,9 +53,9 @@ int minute;
 int second;
 
 //설정하고 싶은 시간 설정
-#define HOUR 0
-#define MINUTE 0
-#define SECOND 10
+#define HOUR 1
+#define MINUTE 58
+#define SECOND 47
 
 TM1637Display display(CLK, DIO);
 
