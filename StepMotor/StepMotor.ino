@@ -146,6 +146,9 @@ void TimerDisplay(){
 //-------------------------------------------------
 
 void setup() {
+  //릴레이 제어핀 (30번)
+  pinMode(30, OUTPUT);
+  digitalWrite(30, HIGH);
   delay(15000UL);
   //스피드, 가속도 설정(필수)
   myStepper1.setMaxSpeed(1000.0);
@@ -166,8 +169,6 @@ void setup() {
   myStepper3.setCurrentPosition(0);
   myStepper4.setCurrentPosition(0);
 
-  //릴레이 제어핀 (30번)
-  pinMode(30, OUTPUT);
   Serial.begin(9600);
   DS3231M.begin();
   DS3231M.adjust(DateTime(F(__DATE__), F(__TIME__)));
