@@ -102,6 +102,11 @@ void TimerDisplay(){
       display.setSegments(data);
       return;
     }
+
+    //타이머 표시가 10분이면, 릴레이 모듈로 외부 전원키기
+    if (hour == 0 && minute == 10 && second == 0){
+      digitalWrite(30, HIGH);
+    }
     
     //콜론 OFF
     if (millis() - s > 500){
@@ -160,7 +165,9 @@ void setup() {
   myStepper2.setCurrentPosition(0);
   myStepper3.setCurrentPosition(0);
   myStepper4.setCurrentPosition(0);
-  
+
+  //릴레이 제어핀 (30번)
+  pinMode(30, OUTPUT);
   Serial.begin(9600);
   DS3231M.begin();
   DS3231M.adjust(DateTime(F(__DATE__), F(__TIME__)));
@@ -169,9 +176,13 @@ void setup() {
 void loop() {
   // 반시계방향
   Step(17);
+  // 릴레이 전원 끄기
+  digitalWrite(30, LOW);
   TimerDisplay();
 
   // 시계방향
   Step(-17);
+  // 릴레이 전원 끄기
+  digitalWrite(30, LOW);
   TimerDisplay();
 }
