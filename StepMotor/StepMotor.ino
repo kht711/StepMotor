@@ -5,6 +5,8 @@
 
 //4096->360 deg
 const long steps = 4096;
+//릴레이 핀번호
+int relayPin = 30;
 
 /* IN1->pin8
  * IN2->pin9
@@ -105,7 +107,7 @@ void TimerDisplay(){
 
     //타이머 표시가 10분이면, 릴레이 모듈로 외부 전원키기
     if (hour == 0 && minute == 10 && second == 0){
-      digitalWrite(30, HIGH);
+      digitalWrite(relayPin, HIGH);
     }
     
     //콜론 OFF
@@ -147,8 +149,8 @@ void TimerDisplay(){
 
 void setup() {
   //릴레이 제어핀 (30번)
-  pinMode(30, OUTPUT);
-  digitalWrite(30, HIGH);
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH);
   delay(15000UL);
   //스피드, 가속도 설정(필수)
   myStepper1.setMaxSpeed(1000.0);
@@ -178,12 +180,12 @@ void loop() {
   // 반시계방향
   Step(17);
   // 릴레이 전원 끄기
-  digitalWrite(30, LOW);
+  digitalWrite(relayPin, LOW);
   TimerDisplay();
 
   // 시계방향
   Step(-17);
   // 릴레이 전원 끄기
-  digitalWrite(30, LOW);
+  digitalWrite(relayPin, LOW);
   TimerDisplay();
 }
