@@ -9,6 +9,24 @@ const long steps = 4096;
 int relay1 = 50;
 int relay2 = 51;
 int relay3 = 52;
+// 8 pin switch
+int switch1pin = 62;
+int switch2pin = 63;
+int switch3pin = 64;
+int switch4pin = 65;
+int switch5pin = 66;
+int switch6pin = 67;
+int switch7pin = 68;
+int switch8pin = 69;
+bool switch1 = 0;
+bool switch2 = 0;
+bool switch3 = 0;
+bool switch4 = 0;
+bool switch5 = 0;
+bool switch6 = 0;
+bool switch7 = 0;
+bool switch8 = 0;
+bool buttonFlag = false;
 
 /* IN1->pin8
 * IN2->pin9
@@ -128,6 +146,112 @@ void TimerDisplay(){
       s = millis();
     }
 
+    switch1 = digitalRead(switch1pin);
+    switch2 = digitalRead(switch2pin);
+    switch3 = digitalRead(switch3pin);
+    switch4 = digitalRead(switch4pin);
+    switch5 = digitalRead(switch5pin);
+    switch6 = digitalRead(switch6pin);
+    switch7 = digitalRead(switch7pin);
+    switch8 = digitalRead(switch8pin);
+
+    // push switch 1 (minus 1 hour)
+    if (switch1 == LOW) {
+      if (hour > 0) {
+        if (buttonFlag == false) {
+          hour -= 1;
+          buttonFlag = true;
+        }
+      }
+    }
+    // push switch 3 (minus 30 minutes)
+    if (switch3 == LOW) {
+      if (hour*60 + minute >= 30) {
+        if (buttonFlag == false) {
+          minute -= 30;
+          if (minute < 0) {
+            minute += 60;
+            hour -= 1;
+          }
+          buttonFlag = true;
+        }
+      }
+    }
+    // push switch 5 (minus 10 minutes)
+    if (switch5 == LOW) {
+      if (hour*60 + minute >= 10) {
+        if (buttonFlag == false) {
+          minute -= 10;
+          if (minute < 0) {
+            minute += 60;
+            hour -= 1;
+          }
+          buttonFlag = true;
+        }
+      }
+    }
+    // push switch 7 (minus 1 minutes)
+    if (switch7 == LOW) {
+      if (hour*60 + minute >= 1) {
+        if (buttonFlag == false) {
+          minute -= 1;
+          if (minute < 0) {
+            minute += 60;
+            hour -= 1;
+          }
+          buttonFlag = true;
+        }
+      }
+    }
+    // push switch 2 (plus 1 hour)
+    if (switch2 == LOW) {
+      if (buttonFlag == false) {
+        hour += 1;
+        buttonFlag = true;
+      }
+    }
+    // push switch 4 (plus 30 minutes)
+    if (switch4 == LOW) {
+      if (buttonFlag == false) {
+        minute += 30;
+        if (minute >= 60) {
+          minute -= 60;
+          hour += 1;
+        }
+        buttonFlag = true;
+      }
+    }
+    // push switch 6 (plus 10 minute)
+    if (switch6 == LOW) {
+      if (buttonFlag == false) {
+        minute += 10;
+        if (minute >= 60) {
+          minute -= 60;
+          hour += 1;
+        }
+        buttonFlag = true;
+      }
+    }
+    // push switch 8 (plus 1 minute)
+    if (switch8 == LOW) {
+      if (buttonFlag == false) {
+        minute += 1;
+        if (minute >= 60) {
+          minute -= 60;
+          hour += 1;
+        }
+        buttonFlag = true;
+      }
+    }
+
+    // button enable
+    if (buttonFlag) {
+      if ( switch1 == HIGH && switch2 == HIGH && switch3 == HIGH && switch4 == HIGH
+        && switch5 == HIGH && switch6 == HIGH && switch7 == HIGH && switch8 == HIGH) {
+        buttonFlag = false;
+      }
+    }
+
     //when second < 1
     if (second < 0){
       second = 59;
@@ -178,6 +302,15 @@ void setup() {
   myStepper2.setCurrentPosition(0);
   myStepper3.setCurrentPosition(0);
   myStepper4.setCurrentPosition(0);
+  // 8 pin pull-up mode
+  pinMode(switch1pin, INPUT_PULLUP);
+  pinMode(switch2pin, INPUT_PULLUP);
+  pinMode(switch3pin, INPUT_PULLUP);
+  pinMode(switch4pin, INPUT_PULLUP);
+  pinMode(switch5pin, INPUT_PULLUP);
+  pinMode(switch6pin, INPUT_PULLUP);
+  pinMode(switch7pin, INPUT_PULLUP);
+  pinMode(switch8pin, INPUT_PULLUP);
 
   Serial.begin(9600);
   DS3231M.begin();
