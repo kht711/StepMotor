@@ -246,6 +246,10 @@ void TimerDisplay(){
 
     // button enable
     if (buttonFlag) {
+      data[0] = display.encodeDigit(hour / 10);
+      data[1] = 0x80 + display.encodeDigit(hour % 10);
+      data[2] = display.encodeDigit(minute / 10);
+      data[3] = display.encodeDigit(minute % 10);
       if ( switch1 == HIGH && switch2 == HIGH && switch3 == HIGH && switch4 == HIGH
         && switch5 == HIGH && switch6 == HIGH && switch7 == HIGH && switch8 == HIGH) {
         buttonFlag = false;
